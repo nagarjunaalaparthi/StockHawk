@@ -7,4 +7,5 @@
     <string name="symbol_message">Search for a stock Symbol</string>
     <string name="hint">FB</string>
     <string name="ok">OK</string>
+    <string name="action_change_units">Change Units</string>
 </resources>

@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.google.android.gms.gcm.GcmNetworkManager;
 import com.google.android.gms.gcm.PeriodicTask;
 import com.google.android.gms.gcm.Task;
+import com.stockhawk.Utils.Utils;
 import com.stockhawk.adapter.QuoteCursorAdapter;
 import com.stockhawk.adapter.RecyclerViewItemClickListener;
 import com.stockhawk.adapter.SimpleItemTouchHelperCallback;
@@ -192,7 +193,11 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
         if (id == R.id.action_settings) {
             return true;
         }
-
+        if (id == R.id.action_change_units){
+            // this is for changing stock changes from percent value to dollar value
+            Utils.showPercent = !Utils.showPercent;
+            this.getContentResolver().notifyChange(QuoteProvider.Quotes.CONTENT_URI, null);
+        }
         return super.onOptionsItemSelected(item);
     }
 

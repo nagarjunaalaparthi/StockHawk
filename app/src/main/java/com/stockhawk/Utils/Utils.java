@@ -21,6 +21,7 @@ public class Utils {
     private static String KEY_CHANGE = "Change";
     private static String KEY_SYMBOL = "symbol";
     private static String KEY_BID = "Bid";
+    private static String KEY_CHANGE_PERCENT = "ChangeinPercent";
 
     public static ArrayList quoteJsonToContentVals(String JSON) {
         ArrayList<ContentProviderOperation> batchOperations = new ArrayList<>();
@@ -97,10 +98,10 @@ public class Utils {
         if (changes != null && changes != "null") {
             try {
                 String change = jsonObject.getString(KEY_CHANGE);
-                builder.withValue(QuoteColumns.SYMBOL, jsonObject.getString(KEY_SYMBOL));
-                builder.withValue(QuoteColumns.BIDPRICE, truncateBidPrice(jsonObject.getString(KEY_BID)));
+                builder.withValue(QuoteColumns.SYMBOL, getKeyValue(jsonObject, KEY_SYMBOL));
+                builder.withValue(QuoteColumns.BIDPRICE, truncateBidPrice(getKeyValue(jsonObject, KEY_BID)));
                 builder.withValue(QuoteColumns.PERCENT_CHANGE, truncateChange(
-                        jsonObject.getString("ChangeinPercent"), true));
+                        getKeyValue(jsonObject, KEY_CHANGE_PERCENT), true));
                 builder.withValue(QuoteColumns.CHANGE, truncateChange(change, false));
                 builder.withValue(QuoteColumns.ISCURRENT, 1);
                 if (change.charAt(0) == '-') {
@@ -114,5 +115,20 @@ public class Utils {
             }
         }
         return null;
+    }
+
+    public static String getKeyValue(JSONObject object, String key){
+        String value = "";
+        try {
+            value = object.getString(key);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+        if (value != null && value != "null") {
+            return value;
+        }else{
+            return null;
+        }
     }
 }
