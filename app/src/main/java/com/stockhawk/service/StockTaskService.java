@@ -1,7 +1,9 @@
 package com.stockhawk.service;
 
+import android.content.ContentProviderOperation;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -21,6 +23,7 @@ import com.stockhawk.model.QuoteProvider;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 
 public class StockTaskService extends GcmTaskService {
   private String LOG_TAG = StockTaskService.class.getSimpleName();
@@ -68,7 +71,7 @@ public class StockTaskService extends GcmTaskService {
         // Init task. Populates DB with quotes for the symbols seen below
         try {
           urlStringBuilder.append(
-              URLEncoder.encode("\"YHOO\",\"AAPL\",\"GOOG\",\"MSFT\")", "UTF-8"));
+              URLEncoder.encode("\"AAPL\",\"GOOG\",\"MSFT\")", "UTF-8"));
         } catch (UnsupportedEncodingException e) {
           e.printStackTrace();
         }
@@ -118,8 +121,15 @@ public class StockTaskService extends GcmTaskService {
             mContext.getContentResolver().update(QuoteProvider.Quotes.CONTENT_URI, contentValues,
                 null, null);
           }
-          mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
-              Utils.quoteJsonToContentVals(getResponse));
+          ArrayList<ContentProviderOperation> operations = Utils.quoteJsonToContentVals(getResponse);
+          if(operations!=null&&operations.size() > 0) {
+            mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,operations);
+          }else{
+            Intent intent = new Intent("com.stockhawk.datanotfound");
+            mContext.sendBroadcast(intent);
+            result = GcmNetworkManager.RESULT_FAILURE;
+            Log.i("finished","GcmNetworkManager.RESULT_FAILURE");
+          }
         }catch (RemoteException | OperationApplicationException e){
           Log.e(LOG_TAG, "Error applying batch insert", e);
         }
@@ -130,5 +140,6 @@ public class StockTaskService extends GcmTaskService {
 
     return result;
   }
+
 
 }

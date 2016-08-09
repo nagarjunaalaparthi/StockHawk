@@ -1,9 +1,11 @@
 package com.stockhawk;
 
 import android.app.LoaderManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
@@ -13,6 +15,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,6 +43,7 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
     private Context mContext;
     private Cursor mCursor;
     boolean isConnected;
+    private DataChangedReciever dataReciever;
 
 
     @Override
@@ -111,7 +115,23 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
     @Override
     public void onResume() {
         super.onResume();
+        registerDataReceiver();
         getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
+    }
+
+    private void registerDataReceiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("com.stockhawk.datanotfound");
+        dataReciever = new DataChangedReciever();
+        registerReceiver(dataReciever, filter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(dataReciever!=null){
+            unregisterReceiver(dataReciever);
+        }
+        super.onDestroy();
     }
 
     private View.OnClickListener fabClickListener = new View.OnClickListener() {
@@ -191,11 +211,22 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
         hideProgressDialog();
         mCursorAdapter.swapCursor(data);
         mCursor = data;
+        Log.i("finished", data.toString());
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         hideProgressDialog();
+        Log.i("finished", "reset");
         mCursorAdapter.swapCursor(null);
+    }
+
+    public class DataChangedReciever extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            hideProgressDialog();
+            Toast.makeText(context, "no stock details found", Toast.LENGTH_LONG).show();
+        }
     }
 }

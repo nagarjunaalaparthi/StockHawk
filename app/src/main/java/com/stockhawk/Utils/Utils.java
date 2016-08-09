@@ -34,14 +34,20 @@ public class Utils {
                 if (count == 1) {
                     jsonObject = jsonObject.getJSONObject("results")
                             .getJSONObject("quote");
-                    batchOperations.add(buildBatchOperation(jsonObject));
+                    ContentProviderOperation operation = buildBatchOperation(jsonObject);
+                    if(operation!=null) {
+                        batchOperations.add(operation);
+                    }
                 } else {
                     resultsArray = jsonObject.getJSONObject("results").getJSONArray("quote");
 
                     if (resultsArray != null && resultsArray.length() != 0) {
                         for (int i = 0; i < resultsArray.length(); i++) {
                             jsonObject = resultsArray.getJSONObject(i);
-                            batchOperations.add(buildBatchOperation(jsonObject));
+                            ContentProviderOperation operation = buildBatchOperation(jsonObject);
+                            if(operation!=null) {
+                                batchOperations.add(operation);
+                            }
                         }
                     }
                 }
@@ -102,11 +108,11 @@ public class Utils {
                 } else {
                     builder.withValue(QuoteColumns.ISUP, 1);
                 }
-
+                return builder.build();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        return builder.build();
+        return null;
     }
 }
