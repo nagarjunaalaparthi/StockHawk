@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">StockHawk</string>
+    <string name="action_settings">Settings</string>
+    <string name="app_name_splash">StockHawk</string>
+    <string name="network_toast">Please check the network connection</string>
+    <string name="symbol_search">Symbol Search</string>
+    <string name="symbol_message">Search for a stock Symbol</string>
+    <string name="hint">FB</string>
+    <string name="ok">OK</string>
+</resources>
