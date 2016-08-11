@@ -43,6 +43,17 @@ public abstract class CursorRecyclerViewAdapter <VH extends RecyclerView.ViewHol
     return 0;
   }
 
+  public String getSymbol(int position){
+    String symbol = "";
+    if (!mCursor.moveToPosition(position)){
+      throw new IllegalStateException("Could not move Cursor to position: " + position);
+    }else{
+      symbol = mCursor.getString(mCursor.getColumnIndex("symbol")).toUpperCase();
+    }
+    return symbol;
+  }
+
+
   @Override public void setHasStableIds(boolean hasStableIds) {
     super.setHasStableIds(true);
   }

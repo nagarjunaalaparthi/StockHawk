@@ -83,6 +83,9 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
                     public void onItemClick(View v, int position) {
                         //TODO:
                         // do something on item click
+                        Intent intent = new Intent(MainActivity.this,StockChartActivity.class);
+                        intent.putExtra("symbol",mCursorAdapter.getSymbol(position));
+                        startActivity(intent);
                     }
                 }));
         recyclerView.setAdapter(mCursorAdapter);

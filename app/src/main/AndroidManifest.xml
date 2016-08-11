@@ -20,6 +20,10 @@
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
+            android:name=".StockChartActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".SplashActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
@@ -41,6 +45,22 @@
             android:authorities="com.stockhawk.QuoteProvider"
             android:name="com.stockhawk.generated.QuoteProvider"
             android:exported="false"/>
+        <receiver
+            android:name=".widget.WidgetProvider"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/info" />
+        </receiver>
+
+        <service
+            android:name=".widget.WidgetRemoteViewService"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 
 </manifest>
