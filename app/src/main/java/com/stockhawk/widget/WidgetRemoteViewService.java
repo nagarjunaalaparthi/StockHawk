@@ -74,6 +74,8 @@ public class WidgetRemoteViewService extends RemoteViewsService{
                 // Bind data to the views
                 views.setTextViewText(R.id.stock_symbol, data.getString(data.getColumnIndex
                         ("symbol")));
+                views.setContentDescription(R.id.stock_symbol, data.getString(data.getColumnIndex
+                        ("symbol")));
 
                 if (data.getInt(data.getColumnIndex(QuoteColumns.ISUP)) == 1) {
                     views.setInt(R.id.change, "setBackgroundResource", R.drawable.percent_change_pill_green);
@@ -83,8 +85,10 @@ public class WidgetRemoteViewService extends RemoteViewsService{
 
                 if (Utils.showPercent) {
                     views.setTextViewText(R.id.change, data.getString(data.getColumnIndex(QuoteColumns.PERCENT_CHANGE)));
+                    views.setContentDescription(R.id.change, data.getString(data.getColumnIndex(QuoteColumns.PERCENT_CHANGE)));
                 } else {
                     views.setTextViewText(R.id.change, data.getString(data.getColumnIndex(QuoteColumns.CHANGE)));
+                    views.setContentDescription(R.id.change, data.getString(data.getColumnIndex(QuoteColumns.CHANGE)));
                 }
 
                 final Intent fillInIntent = new Intent();

@@ -62,8 +62,10 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
         }
         if (Utils.showPercent) {
             viewHolder.change.setText(cursor.getString(cursor.getColumnIndex("percent_change")));
+            viewHolder.change.setContentDescription(cursor.getString(cursor.getColumnIndex("percent_change")));
         } else {
             viewHolder.change.setText(cursor.getString(cursor.getColumnIndex("change")));
+            viewHolder.change.setContentDescription(cursor.getString(cursor.getColumnIndex("change")));
         }
     }
 

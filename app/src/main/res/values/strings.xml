@@ -8,4 +8,7 @@
     <string name="hint">FB</string>
     <string name="ok">OK</string>
     <string name="action_change_units">Change Units</string>
+    <string name="chart_desc">Line charting of stock details</string>
+    <string name="add_stock">Add Stock</string>
+    <string name="enter_stock_code">Enter the stock code to serach</string>
 </resources>
