@@ -11,6 +11,7 @@
         android:id="@+id/widget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/app_name"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
         android:background="@drawable/widget_title_background">
 

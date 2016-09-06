@@ -25,11 +25,7 @@ import java.util.Collections;
 
 public class StockChartActivity extends BaseActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
-    private static final int CURSOR_LOADER_ID = 0;
-    private Cursor mCursor;
     private LineChartView lineChartView;
-    private LineSet mLineSet;
-    int maxRange,minRange,step;
     public static final String TAG_STOCK_SYMBOL = "STOCK_SYMBOL";
     private static final int STOCKS_LOADER = 1;
     String currency = "";
@@ -37,7 +33,6 @@ public class StockChartActivity extends BaseActivity implements LoaderManager.Lo
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_deatils);
-        mLineSet = new LineSet();
         lineChartView = (LineChartView) findViewById(R.id.linechart);
         Intent intent = getIntent();
         Bundle args = new Bundle();
@@ -64,6 +59,8 @@ public class StockChartActivity extends BaseActivity implements LoaderManager.Lo
     @Override public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data!=null && data.getCount() != 0) {
             renderChart(data);
+        }else{
+            Toast.makeText(this, "No data available", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -72,37 +69,6 @@ public class StockChartActivity extends BaseActivity implements LoaderManager.Lo
 
     }
 
-//    private void fillLineSet(){
-//        mCursor.moveToFirst();
-//        for (int i = 0; i < mCursor.getCount(); i++){
-//            float price = Float.parseFloat(mCursor.getString(mCursor.getColumnIndex(QuoteColumns.BIDPRICE)));
-//            mLineSet.addPoint("test " + i, price);
-//            mCursor.moveToNext();
-//        }
-//        mLineSet.setColor(ContextCompat.getColor(StockChartActivity.this,R.color.red))
-//                .setDotsStrokeThickness(Tools.fromDpToPx(2))
-//                .setDotsStrokeColor(ContextCompat.getColor(StockChartActivity.this,R.color.green))
-//                .setDotsColor(ContextCompat.getColor(StockChartActivity.this,R.color.colorPrimaryLight));
-//        lineChartView.addData(mLineSet);
-//        lineChartView.show();
-//    }
-
-    private void initLineChart() {
-        Paint gridPaint = new Paint();
-        gridPaint.setColor(Color.GRAY);
-        gridPaint.setStyle(Paint.Style.STROKE);
-        gridPaint.setAntiAlias(true);
-        gridPaint.setStrokeWidth(Tools.fromDpToPx(1f));
-        lineChartView.setBorderSpacing(1)
-                .setAxisBorderValues(minRange-100, maxRange+100, 50)
-                .setXLabels(AxisController.LabelPosition.OUTSIDE)
-                .setYLabels(AxisController.LabelPosition.OUTSIDE)
-                .setLabelsColor(ContextCompat.getColor(StockChartActivity.this,R.color.colorPrimary))
-                .setXAxis(false)
-                .setYAxis(false)
-                .setBorderSpacing(Tools.fromDpToPx(5))
-                .setGrid(ChartView.GridType.HORIZONTAL, gridPaint);
-    }
     public void renderChart(Cursor data) {
         LineSet lineSet = new LineSet();
         float minimumPrice = Float.MAX_VALUE;
@@ -118,18 +84,19 @@ public class StockChartActivity extends BaseActivity implements LoaderManager.Lo
         }
 
         lineSet.setColor(ContextCompat.getColor(StockChartActivity.this, R.color.colorIcons))
-                .setFill(ContextCompat.getColor(StockChartActivity.this, R.color.colorPrimaryDark))
+                .setFill(ContextCompat.getColor(StockChartActivity.this, R.color.colorChatBg))
                 .setDotsColor(ContextCompat.getColor(StockChartActivity.this, R.color.colorIcons))
-                .setThickness(4)
+                .setThickness(3)
                 .setDashed(new float[]{15f, 15f});
 
 
         lineChartView.setBorderSpacing(Tools.fromDpToPx(15))
                 .setYLabels(AxisController.LabelPosition.OUTSIDE)
-                .setXLabels(AxisController.LabelPosition.NONE)
-                .setLabelsColor(ContextCompat.getColor(StockChartActivity.this, R.color.colorDivider))
-                .setXAxis(false)
-                .setYAxis(false)
+                .setXLabels(AxisController.LabelPosition.OUTSIDE)
+                .setLabelsColor(ContextCompat.getColor(StockChartActivity.this, R.color.colorIcons))
+                .setXAxis(true)
+                .setAxisColor(ContextCompat.getColor(StockChartActivity.this, R.color.colorSecondaryText))
+                .setYAxis(true)
                 .setAxisBorderValues(Math.round(Math.max(0f, minimumPrice - 5f)), Math.round(maximumPrice + 5f))
                 .addData(lineSet);
 

@@ -8,6 +8,7 @@
     <color name="colorPrimaryLight">#BBDEFB</color>
     <color name="colorPrimaryText">#212121</color>
     <color name="textcolor">#e6e6e6</color>
+    <color name="colorChatBg">#33e6e6e6</color>
     <color name="colorSecondaryText">#78909C</color>
     <color name="colorIcons">#FFFFFF</color>
     <color name="colorDivider">#B6B6B6</color>
