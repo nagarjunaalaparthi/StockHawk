@@ -4,6 +4,7 @@ import android.content.ContentProviderOperation;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.stockhawk.Constants;
 import com.stockhawk.model.QuoteColumns;
 import com.stockhawk.model.QuoteProvider;
 
@@ -30,17 +31,17 @@ public class Utils {
         try {
             jsonObject = new JSONObject(JSON);
             if (jsonObject != null && jsonObject.length() != 0) {
-                jsonObject = jsonObject.getJSONObject("query");
-                int count = Integer.parseInt(jsonObject.getString("count"));
+                jsonObject = jsonObject.getJSONObject(Constants.QUERY);
+                int count = Integer.parseInt(jsonObject.getString(Constants.COUNT));
                 if (count == 1) {
-                    jsonObject = jsonObject.getJSONObject("results")
-                            .getJSONObject("quote");
+                    jsonObject = jsonObject.getJSONObject(Constants.RESULT)
+                            .getJSONObject(Constants.QUOTE);
                     ContentProviderOperation operation = buildBatchOperation(jsonObject);
                     if(operation!=null) {
                         batchOperations.add(operation);
                     }
                 } else {
-                    resultsArray = jsonObject.getJSONObject("results").getJSONArray("quote");
+                    resultsArray = jsonObject.getJSONObject(Constants.RESULT).getJSONArray(Constants.QUOTE);
 
                     if (resultsArray != null && resultsArray.length() != 0) {
                         for (int i = 0; i < resultsArray.length(); i++) {
@@ -95,7 +96,7 @@ public class Utils {
             e.printStackTrace();
         }
         Log.d("values", changes);
-        if (changes != null && changes != "null") {
+        if (changes != null && changes != Constants.NULL) {
             try {
                 String change = jsonObject.getString(KEY_CHANGE);
                 builder.withValue(QuoteColumns.SYMBOL, getKeyValue(jsonObject, KEY_SYMBOL));
@@ -125,7 +126,7 @@ public class Utils {
             e.printStackTrace();
             return null;
         }
-        if (value != null && value != "null") {
+        if (value != null && value != Constants.NULL) {
             return value;
         }else{
             return null;

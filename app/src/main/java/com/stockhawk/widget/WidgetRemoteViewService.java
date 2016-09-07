@@ -7,6 +7,7 @@ import android.widget.AdapterView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+import com.stockhawk.Constants;
 import com.stockhawk.R;
 import com.stockhawk.Utils.Utils;
 import com.stockhawk.model.QuoteColumns;
@@ -74,14 +75,14 @@ public class WidgetRemoteViewService extends RemoteViewsService {
 
                 // Bind data to the views
                 views.setTextViewText(R.id.stock_symbol, data.getString(data.getColumnIndex
-                        ("symbol")));
+                        (Constants.SYMBOL)));
                 views.setContentDescription(R.id.stock_symbol, data.getString(data.getColumnIndex
-                        ("symbol")));
+                        (Constants.SYMBOL)));
 
                 if (data.getInt(data.getColumnIndex(QuoteColumns.ISUP)) == 1) {
-                    views.setInt(R.id.change, "setBackgroundResource", R.drawable.percent_change_pill_green);
+                    views.setInt(R.id.change, getString(R.string.setBackgroundResource), R.drawable.percent_change_pill_green);
                 } else {
-                    views.setInt(R.id.change, "setBackgroundResource", R.drawable.percent_change_pill_red);
+                    views.setInt(R.id.change, getString(R.string.setBackgroundResource), R.drawable.percent_change_pill_red);
                 }
 
                 if (Utils.showPercent) {
@@ -93,7 +94,7 @@ public class WidgetRemoteViewService extends RemoteViewsService {
                 }
 
                 final Intent fillInIntent = new Intent();
-                fillInIntent.putExtra("symbol", data.getString(data.getColumnIndex(QuoteColumns.SYMBOL)));
+                fillInIntent.putExtra(Constants.SYMBOL, data.getString(data.getColumnIndex(QuoteColumns.SYMBOL)));
                 views.setOnClickFillInIntent(R.id.widget_list_item, fillInIntent);
 
                 return views;

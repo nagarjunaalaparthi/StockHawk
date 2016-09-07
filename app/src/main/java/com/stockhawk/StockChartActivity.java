@@ -29,9 +29,9 @@ public class StockChartActivity extends BaseActivity implements LoaderManager.Lo
         lineChartView = (LineChartView) findViewById(R.id.linechart);
         Intent intent = getIntent();
         Bundle args = new Bundle();
-        args.putString("symbol", intent.getStringExtra("symbol"));
+        args.putString(Constants.SYMBOL, intent.getStringExtra(Constants.SYMBOL));
 
-        currency = getIntent().getStringExtra("symbol");
+        currency = getIntent().getStringExtra(Constants.SYMBOL);
         getLoaderManager().initLoader(STOCKS_LOADER, null, this);
     }
 
@@ -53,7 +53,7 @@ public class StockChartActivity extends BaseActivity implements LoaderManager.Lo
         if (data!=null && data.getCount() != 0) {
             drawChart(data);
         }else{
-            Toast.makeText(this, "No data available", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.no_data_avaliable), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -96,6 +96,6 @@ public class StockChartActivity extends BaseActivity implements LoaderManager.Lo
         if (lineSet.size() > 1)
             lineChartView.show(new Animation());
         else
-            Toast.makeText(this, "No data available", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.no_data_avaliable), Toast.LENGTH_SHORT).show();
     }
 }

@@ -16,6 +16,7 @@ import com.google.android.gms.gcm.TaskParams;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+import com.stockhawk.Constants;
 import com.stockhawk.Utils.Utils;
 import com.stockhawk.model.QuoteColumns;
 import com.stockhawk.model.QuoteProvider;
@@ -67,7 +68,7 @@ public class StockTaskService extends GcmTaskService  {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        if (params.getTag().equals("init") || params.getTag().equals("periodic")) {
+        if (params.getTag().equals(Constants.INIT) || params.getTag().equals(Constants.PERIODIC)) {
             isUpdate = true;
             initQueryCursor = mContext.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
                     new String[]{"Distinct " + QuoteColumns.SYMBOL}, null,
@@ -75,8 +76,8 @@ public class StockTaskService extends GcmTaskService  {
             if (initQueryCursor.getCount() == 0 || initQueryCursor == null) {
                 // Init task. Populates DB with quotes for the symbols seen below
                 try {
-                    if (params.getExtras().containsKey("symbols")) {
-                            String symbols = params.getExtras().getString("symbols");
+                    if (params.getExtras().containsKey(Constants.SYMBOLS)) {
+                            String symbols = params.getExtras().getString(Constants.SYMBOLS);
                         if(symbols.length() > 0) {
                             urlStringBuilder.append(
                                     URLEncoder.encode(symbols + ")", "UTF-8"));
@@ -96,7 +97,7 @@ public class StockTaskService extends GcmTaskService  {
                 initQueryCursor.moveToFirst();
                 for (int i = 0; i < initQueryCursor.getCount(); i++) {
                     mStoredSymbols.append("\"" +
-                            initQueryCursor.getString(initQueryCursor.getColumnIndex("symbol")) + "\",");
+                            initQueryCursor.getString(initQueryCursor.getColumnIndex(Constants.SYMBOL)) + "\",");
                     initQueryCursor.moveToNext();
                 }
                 mStoredSymbols.replace(mStoredSymbols.length() - 1, mStoredSymbols.length(), ")");
@@ -106,10 +107,10 @@ public class StockTaskService extends GcmTaskService  {
                     e.printStackTrace();
                 }
             }
-        } else if (params.getTag().equals("add")) {
+        } else if (params.getTag().equals(Constants.ADD)) {
             isUpdate = false;
             // get symbol from params.getExtra and build query
-            String stockInput = params.getExtras().getString("symbol");
+            String stockInput = params.getExtras().getString(Constants.SYMBOL);
             try {
                 urlStringBuilder.append(URLEncoder.encode("\"" + stockInput + "\")", "UTF-8"));
             } catch (UnsupportedEncodingException e) {

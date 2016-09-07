@@ -78,7 +78,7 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
                         //TODO:
                         // do something on item click
                         Intent intent = new Intent(MainActivity.this, StockChartActivity.class);
-                        intent.putExtra("symbol", mCursorAdapter.getSymbol(position));
+                        intent.putExtra(Constants.SYMBOL, mCursorAdapter.getSymbol(position));
                         startActivity(intent);
                     }
                 }));
@@ -92,7 +92,7 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
         if (isConnected) {
             long period = 3600L;
             long flex = 10L;
-            String periodicTag = "periodic";
+            String periodicTag = getString(R.string.periodic);
 
             // create a periodic task to pull stocks once every hour after the app has been opened. This
             // is so Widget data stays up to date.
@@ -155,15 +155,15 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
                 new String[]{text.toString()}, null);
         if (c.getCount() != 0) {
             Toast toast =
-                    Toast.makeText(MainActivity.this, "This stock is already saved!",
+                    Toast.makeText(MainActivity.this, getString(R.string.stock_is_already_saved),
                             Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
             toast.show();
             return;
         } else {
             // Add the stock to DB
-            mServiceIntent.putExtra("tag", "add");
-            mServiceIntent.putExtra("symbol", text.toString());
+            mServiceIntent.putExtra(Constants.TAG, Constants.ADD);
+            mServiceIntent.putExtra(Constants.SYMBOL, text.toString());
             startService(mServiceIntent);
         }
     }
@@ -223,8 +223,8 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
                     }
                 }
             }
-            mServiceIntent.putExtra("symbols", builder.toString());
-            mServiceIntent.putExtra("tag", "init");
+            mServiceIntent.putExtra(Constants.SYMBOL, builder.toString());
+            mServiceIntent.putExtra(Constants.TAG, Constants.INIT);
             if (isConnected) {
                 startService(mServiceIntent);
             } else {
@@ -247,7 +247,7 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
         @Override
         public void onReceive(Context context, Intent intent) {
             hideProgressDialog();
-            Toast.makeText(context, "no stock details found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, getString(R.string.no_stock_details_found), Toast.LENGTH_SHORT).show();
         }
     }
 }

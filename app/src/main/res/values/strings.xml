@@ -11,4 +11,9 @@
     <string name="chart_desc">Line charting of stock details</string>
     <string name="add_stock">Add Stock</string>
     <string name="enter_stock_code">Enter the stock code to serach</string>
+    <string name="no_stock_details_found">no stock details found</string>
+    <string name="stock_is_already_saved">This stock is already saved!</string>
+    <string name="periodic">periodic</string>
+    <string name="no_data_avaliable">No data available</string>
+    <string name="setBackgroundResource">setBackgroundResource</string>
 </resources>
