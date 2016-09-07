@@ -1,16 +1,12 @@
 package com.stockhawk.service;
 
-import android.app.LoaderManager;
 import android.content.ContentProviderOperation;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
-import android.os.Bundle;
 import android.os.RemoteException;
 import android.util.Log;
 
@@ -79,14 +75,19 @@ public class StockTaskService extends GcmTaskService  {
             if (initQueryCursor.getCount() == 0 || initQueryCursor == null) {
                 // Init task. Populates DB with quotes for the symbols seen below
                 try {
-//                    if (params.getExtras().containsKey("symbols")) {
-//                            String symbols = params.getExtras().getString("symbols");
-//                        urlStringBuilder.append(
-//                                URLEncoder.encode(symbols+")", "UTF-8"));
-//                    } else {
+                    if (params.getExtras().containsKey("symbols")) {
+                            String symbols = params.getExtras().getString("symbols");
+                        if(symbols.length() > 0) {
+                            urlStringBuilder.append(
+                                    URLEncoder.encode(symbols + ")", "UTF-8"));
+                        }else{
+                            urlStringBuilder.append(
+                                    URLEncoder.encode("\"AAPL\",\"GOOG\",\"MSFT\",\"YHOO\")", "UTF-8"));
+                        }
+                    } else {
                         urlStringBuilder.append(
                                 URLEncoder.encode("\"AAPL\",\"GOOG\",\"MSFT\",\"YHOO\")", "UTF-8"));
-//                    }
+                    }
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }

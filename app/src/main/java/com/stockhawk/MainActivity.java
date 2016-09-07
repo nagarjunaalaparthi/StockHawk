@@ -45,6 +45,7 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
     private Cursor mCursor;
     boolean isConnected;
     private DataChangedReciever dataReciever;
+    private boolean isFirstTime = true;
 
 
     @Override
@@ -62,15 +63,8 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
                 activeNetwork.isConnectedOrConnecting();
         // The intent service is for executing immediate pulls from the Yahoo API
         // GCMTaskService can only schedule tasks, they cannot execute immediately
-        mServiceIntent = new Intent(this, StockIntentService.class);
-        if (savedInstanceState == null) {
-            // Run the initialize task service so that some stocks appear upon an empty database
-            mServiceIntent.putExtra("tag", "init");
-            if (isConnected) {
-                startService(mServiceIntent);
-            } else {
-                networkToast();
-            }
+        if(savedInstanceState == null){
+            isFirstTime = true;
         }
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.stocks_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -83,8 +77,8 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
                     public void onItemClick(View v, int position) {
                         //TODO:
                         // do something on item click
-                        Intent intent = new Intent(MainActivity.this,StockChartActivity.class);
-                        intent.putExtra("symbol",mCursorAdapter.getSymbol(position));
+                        Intent intent = new Intent(MainActivity.this, StockChartActivity.class);
+                        intent.putExtra("symbol", mCursorAdapter.getSymbol(position));
                         startActivity(intent);
                     }
                 }));
@@ -132,7 +126,7 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
 
     @Override
     protected void onDestroy() {
-        if(dataReciever!=null){
+        if (dataReciever != null) {
             unregisterReceiver(dataReciever);
         }
         super.onDestroy();
@@ -162,7 +156,7 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
         if (c.getCount() != 0) {
             Toast toast =
                     Toast.makeText(MainActivity.this, "This stock is already saved!",
-                            Toast.LENGTH_LONG);
+                            Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
             toast.show();
             return;
@@ -192,11 +186,7 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        if (id == R.id.action_change_units){
+        if (id == R.id.action_change_units) {
             // this is for changing stock changes from percent value to dollar value
             Utils.showPercent = !Utils.showPercent;
             this.getContentResolver().notifyChange(QuoteProvider.Quotes.CONTENT_URI, null);
@@ -219,6 +209,29 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
         hideProgressDialog();
         mCursorAdapter.swapCursor(data);
         mCursor = data;
+        if(isFirstTime){
+            mServiceIntent = new Intent(this, StockIntentService.class);
+            StringBuilder builder = new StringBuilder();
+            if (mCursor != null && mCursor.getCount() > 0) {
+                mCursor.moveToFirst();
+                while (mCursor.moveToNext()) {
+                    String symbol = mCursor.getString(mCursor.getColumnIndex(QuoteColumns.SYMBOL));
+                    if (builder.toString().length() > 0) {
+                        builder.append(",\"" + symbol + "\"");
+                    } else {
+                        builder.append("\"" + symbol + "\"");
+                    }
+                }
+            }
+            mServiceIntent.putExtra("symbols", builder.toString());
+            mServiceIntent.putExtra("tag", "init");
+            if (isConnected) {
+                startService(mServiceIntent);
+            } else {
+                networkToast();
+            }
+            isFirstTime = false;
+        }
         Log.i("finished", data.toString());
     }
 
@@ -234,7 +247,7 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
         @Override
         public void onReceive(Context context, Intent intent) {
             hideProgressDialog();
-            Toast.makeText(context, "no stock details found", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "no stock details found", Toast.LENGTH_SHORT).show();
         }
     }
 }

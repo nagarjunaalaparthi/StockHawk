@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:background="@color/dialog_bg"
+    android:layout_margin="@dimen/fab_margin"
     android:orientation="vertical"
     android:padding="@dimen/item_margin">
 
@@ -22,6 +23,7 @@
         android:layout_marginTop="@dimen/item_margin"
         android:fontFamily="sans-serif"
         android:text="@string/symbol_message"
+        android:textDirection="locale"
         android:textColor="@color/colorIcons"
         android:textSize="@dimen/dialogue_message_size"
         android:textStyle="normal" />
@@ -31,13 +33,16 @@
         android:id="@+id/search_symbol"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_marginRight="@dimen/fab_margin"
         android:background="@drawable/line"
+        android:contentDescription="@string/enter_stock_code"
         android:fontFamily="sans-serif"
         android:hint="@string/hint"
+        android:paddingEnd="@dimen/fab_margin"
         android:paddingLeft="@dimen/item_margin"
-        android:contentDescription="@string/enter_stock_code"
+        android:paddingRight="@dimen/fab_margin"
+        android:paddingStart="@dimen/item_margin"
         android:textColor="@color/colorIcons"
+        android:textDirection="locale"
         android:textColorHint="@color/colorSecondaryText"
         android:textSize="@dimen/dialogue_message_size"
         android:textStyle="normal" />
@@ -48,8 +53,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center|right"
         android:layout_marginRight="@dimen/fab_margin"
-        android:fontFamily="sans-serif"
         android:contentDescription="@string/ok"
+        android:fontFamily="sans-serif"
         android:padding="@dimen/item_margin"
         android:text="@string/ok"
         android:textColor="@color/colorIcons"

@@ -5,28 +5,21 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import com.db.chart.view.animation.Animation;
 import android.widget.Toast;
 
 import com.db.chart.Tools;
 import com.db.chart.model.LineSet;
 import com.db.chart.view.AxisController;
-import com.db.chart.view.ChartView;
 import com.db.chart.view.LineChartView;
+import com.db.chart.view.animation.Animation;
 import com.stockhawk.model.QuoteColumns;
 import com.stockhawk.model.QuoteProvider;
-
-import java.util.ArrayList;
-import java.util.Collections;
 
 public class StockChartActivity extends BaseActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private LineChartView lineChartView;
-    public static final String TAG_STOCK_SYMBOL = "STOCK_SYMBOL";
     private static final int STOCKS_LOADER = 1;
     String currency = "";
 
@@ -58,7 +51,7 @@ public class StockChartActivity extends BaseActivity implements LoaderManager.Lo
 
     @Override public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data!=null && data.getCount() != 0) {
-            renderChart(data);
+            drawChart(data);
         }else{
             Toast.makeText(this, "No data available", Toast.LENGTH_SHORT).show();
         }
@@ -69,41 +62,39 @@ public class StockChartActivity extends BaseActivity implements LoaderManager.Lo
 
     }
 
-    public void renderChart(Cursor data) {
+    public void drawChart(Cursor data) {
         LineSet lineSet = new LineSet();
-        float minimumPrice = Float.MAX_VALUE;
-        float maximumPrice = Float.MIN_VALUE;
+        float minStockValue = Float.MAX_VALUE;
+        float maxStockValue = Float.MIN_VALUE;
 
         for (data.moveToFirst(); !data.isAfterLast(); data.moveToNext()) {
             String label = data.getString(data.getColumnIndexOrThrow(QuoteColumns.BIDPRICE));
-            float price = Float.parseFloat(label);
+            float stockValue = Float.parseFloat(label);
 
-            lineSet.addPoint(label, price);
-            minimumPrice = Math.min(minimumPrice, price);
-            maximumPrice = Math.max(maximumPrice, price);
+            lineSet.addPoint(label, stockValue);
+            minStockValue = Math.min(minStockValue, stockValue);
+            maxStockValue = Math.max(maxStockValue, stockValue);
         }
 
         lineSet.setColor(ContextCompat.getColor(StockChartActivity.this, R.color.colorIcons))
                 .setFill(ContextCompat.getColor(StockChartActivity.this, R.color.colorChatBg))
-                .setDotsColor(ContextCompat.getColor(StockChartActivity.this, R.color.colorIcons))
+                .setDotsColor(ContextCompat.getColor(StockChartActivity.this, R.color.colorPrimaryDark))
                 .setThickness(3)
-                .setDashed(new float[]{15f, 15f});
+                .setDashed(new float[]{20f, 20f});
 
 
         lineChartView.setBorderSpacing(Tools.fromDpToPx(15))
                 .setYLabels(AxisController.LabelPosition.OUTSIDE)
-                .setXLabels(AxisController.LabelPosition.OUTSIDE)
+                .setXLabels(AxisController.LabelPosition.NONE)
                 .setLabelsColor(ContextCompat.getColor(StockChartActivity.this, R.color.colorIcons))
                 .setXAxis(true)
                 .setAxisColor(ContextCompat.getColor(StockChartActivity.this, R.color.colorSecondaryText))
                 .setYAxis(true)
-                .setAxisBorderValues(Math.round(Math.max(0f, minimumPrice - 5f)), Math.round(maximumPrice + 5f))
+                .setAxisBorderValues(Math.round(Math.max(0f, minStockValue - 5f)), Math.round(maxStockValue + 5f))
                 .addData(lineSet);
 
-        Animation anim = new Animation();
-
         if (lineSet.size() > 1)
-            lineChartView.show(anim);
+            lineChartView.show(new Animation());
         else
             Toast.makeText(this, "No data available", Toast.LENGTH_SHORT).show();
     }
